@@ -4,7 +4,7 @@ from datetime import datetime
 from azure.storage.blob import BlobServiceClient
 
 # --- Configuration ---
-AZURE_CONNECTION_STRING = AZURE_CONNECTION_STRING 
+AZURE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
 AZURE_CONTAINER_NAME = "articles"
 URL_TO_SCRAPE = "https://www.ideabrowser.com/idea-of-the-day"
 
