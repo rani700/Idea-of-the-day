@@ -4,7 +4,7 @@ from datetime import datetime
 from azure.storage.blob import BlobServiceClient
 
 # --- Configuration ---
-AZURE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=ideasarchivestorage;AccountKey=PwsKZGHbXnB3Jski+NEwAIZR8Sv4S3MEA+iqwXz2yaKTE1XBxXLCk7tsIWiSE3zCrgIOCO/V7SUa+AStL1KE7g==;EndpointSuffix=core.windows.net"
+AZURE_CONNECTION_STRING = AZURE_CONNECTION_STRING 
 AZURE_CONTAINER_NAME = "articles"
 URL_TO_SCRAPE = "https://www.ideabrowser.com/idea-of-the-day"
 
