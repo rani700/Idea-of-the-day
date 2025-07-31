@@ -1,9 +1,11 @@
 name: Build and Push Docker Image to ACR
 
+# This workflow runs whenever you push to the 'main' branch
 on:
   push:
     branches:
       - main
+  workflow_dispatch: # Allows you to run it manually from the Actions tab
 
 jobs:
   build-and-push:
@@ -28,6 +30,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          # Build for the linux/amd64 architecture of your VM
           platforms: linux/amd64
           push: true
+          # Tag the image with 'v1'
           tags: ${{ secrets.ACR_LOGIN_SERVER }}/daily-scraper:v1
