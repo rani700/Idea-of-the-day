@@ -2,11 +2,37 @@ import os
 import subprocess
 from datetime import datetime
 from azure.storage.blob import BlobServiceClient
+from azure.identity import ManagedIdentityCredential
+from azure.mgmt.compute import ComputeManagementClient
 
 # --- Configuration ---
 AZURE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
 AZURE_CONTAINER_NAME = "articles"
 URL_TO_SCRAPE = "https://www.ideabrowser.com/idea-of-the-day"
+
+def shutdown_self():
+    """Uses the VM's managed identity to deallocate itself."""
+    print("✅ Task complete. Shutting down the VM now...")
+    try:
+        # These details are passed in from the cron job
+        subscription_id = os.environ.get("AZURE_SUBSCRIPTION_ID")
+        resource_group = os.environ.get("AZURE_RESOURCE_GROUP")
+        vm_name = os.environ.get("AZURE_VM_NAME")
+
+        if not all([subscription_id, resource_group, vm_name]):
+            print("⚠️ Shutdown environment variables not set. Cannot shut down.")
+            return
+
+        # Authenticate using the VM's own identity
+        credential = ManagedIdentityCredential()
+        compute_client = ComputeManagementClient(credential, subscription_id)
+
+        # Deallocate the VM (this stops it and stops billing for compute)
+        compute_client.virtual_machines.begin_deallocate(resource_group, vm_name)
+        print("Shutdown command sent to Azure.")
+
+    except Exception as e:
+        print(f"❌ Failed to send shutdown command: {e}")
 
 def scrape_and_upload():
     """
@@ -68,4 +94,10 @@ def scrape_and_upload():
             print(f"Cleaned up local file: {local_file_name}")
 
 if __name__ == "__main__":
-    scrape_and_upload()
+    try:
+        scrape_and_upload()
+    finally:
+        # This 'finally' block ensures the shutdown command runs
+        # even if the scraping fails.
+        shutdown_self()
+    
