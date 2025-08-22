@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile
+          file: ./scraper/Dockerfile
           platforms: linux/amd64
           push: true
           tags: ${{ secrets.ACR_LOGIN_SERVER }}/daily-scraper:v1
