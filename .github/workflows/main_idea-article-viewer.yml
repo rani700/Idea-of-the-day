@@ -31,6 +31,8 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
+        # Tell the build where to find your requirements file
+        working-directory: ./viewer_app
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -38,9 +40,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: |
-            .
-            !venv/
+          # Tell the build to only package the viewer_app folder
+          path: ./viewer_app
 
   deploy:
     runs-on: ubuntu-latest
@@ -68,4 +69,3 @@ jobs:
         with:
           app-name: 'idea-article-viewer'
           slot-name: 'Production'
-          
